@@ -9,115 +9,49 @@
 // If the current total distance exceeds the limit, we move the return pointer left to reduce the sum.
 // Otherwise, we update the answer if the current pair is better and move the forward pointer right to explore larger valid distances.
 
-import java.util.*;
-
 class Solution {
+    public List<List<Integer>> optimalUtilization(int maxTravelDist,
+                                                  List<List<Integer>> forwardRouteList,
+                                                  List<List<Integer>> returnRouteList) {
 
-    public List<List<Integer>> optimalUtilization(
-        int maxTravelDist,
-        List<List<Integer>> forwardRouteList,
-        List<List<Integer>> returnRouteList
-    ) {
+        List<List<Integer>> result = new ArrayList<>();
 
-        List<List<Integer>> result =
-            new ArrayList<>();
-        
         // sort routes by distance
-        Collections.sort(
-            forwardRouteList,
-            (a, b) -> a.get(1) - b.get(1)
-        );
+        Collections.sort(forwardRouteList, (a, b) -> a.get(1) - b.get(1));
+        Collections.sort(returnRouteList, (a, b) -> a.get(1) - b.get(1));
 
-        Collections.sort(
-            returnRouteList,
-            (a, b) -> a.get(1) - b.get(1)
-        );
-        
         int i = 0;
-
-        int j =
-            returnRouteList.size() - 1;
-        
+        int j = returnRouteList.size() - 1;
         int best = -1;
-        
-        while (
-            i < forwardRouteList.size() &&
-            j >= 0
-        ) {
 
-            int fDist =
-                forwardRouteList.get(i).get(1);
+        while(i < forwardRouteList.size() && j >= 0) {
 
-            int rDist =
-                returnRouteList.get(j).get(1);
-            
-            int sum =
-                fDist + rDist;
-            
+            int sum = forwardRouteList.get(i).get(1) +
+                      returnRouteList.get(j).get(1);
+
             // current pair exceeds limit
-            if (sum > maxTravelDist) {
-
+            if(sum > maxTravelDist) {
                 j--;
-            }
-
-            // valid pair
-            else {
+            } else {
 
                 // better answer found
-                if (sum > best) {
-
+                if(sum > best) {
                     best = sum;
-
                     result.clear();
                 }
 
                 // same optimal answer
-                if (sum == best) {
-
-                    result.add(
-                        Arrays.asList(
-                            forwardRouteList.get(i).get(0),
-                            returnRouteList.get(j).get(0)
-                        )
-                    );
+                if(sum == best) {
+                    result.add(Arrays.asList(
+                        forwardRouteList.get(i).get(0),
+                        returnRouteList.get(j).get(0)
+                    ));
                 }
 
-                // try larger forward route
                 i++;
             }
         }
 
         return result;
-    }
-}
-
-public class Main {
-
-    public static void main(String[] args) {
-
-        Solution sol = new Solution();
-
-        int maxTravelDist = 7000;
-
-        List<List<Integer>> forwardRouteList =
-            Arrays.asList(
-                Arrays.asList(1, 2000),
-                Arrays.asList(2, 4000),
-                Arrays.asList(3, 6000)
-            );
-
-        List<List<Integer>> returnRouteList =
-            Arrays.asList(
-                Arrays.asList(1, 2000)
-            );
-
-        List<List<Integer>> result =
-            sol.optimalUtilization(
-                maxTravelDist,
-                forwardRouteList,
-                returnRouteList
-            );
-
-        System.out.println(result);
     }
 }
